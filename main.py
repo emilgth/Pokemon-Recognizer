@@ -4,7 +4,6 @@ import pathlib
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras import layers
-from keras.layers import BatchNormalization
 from keras import regularizers
 
 PATH = './PokemonData'
@@ -52,4 +51,4 @@ model.add(layers.Dropout(.5))
 model.add(layers.Dense(len(CLASS_NAMES), activation='softmax'))
 
 model.compile(optimizer='adam', loss=keras.losses.categorical_crossentropy, metrics=['accuracy'])
-model.fit(train_data, epochs=3, validation_data=validation_data)
+model.fit(train_data, epochs=10, validation_data=validation_data)
