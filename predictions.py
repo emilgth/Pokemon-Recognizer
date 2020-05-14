@@ -6,6 +6,8 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.utils.np_utils import to_categorical
 import matplotlib.pyplot as plt
 import tensorflow as tf
+import base64
+import tempfile
 
 
 # physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -28,17 +30,40 @@ train_data = IDG.flow_from_directory(PATH, target_size=(224, 224), classes=list(
 validation_data = IDG.flow_from_directory(PATH, target_size=(224, 224), classes=list(CLASS_NAMES),
                                           subset='validation')
 
-model = load_model('./saved_model2_val_loss_0.1268_val_accuracy097')
+model = load_model('./saved_model')
 model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
+def plot_value_array(i, predictions_array, true_label):
+    predictions_array, true_label = predictions_array, true_label[i]
+    plt.grid(False)
+    plt.xticks(range(4))
+    plt.yticks([])
+    thisplot = plt.bar(range(4), predictions_array, color="#777777")
+    plt.ylim([0, 1])
+    predicted_label = np.argmax(predictions_array)
+
+    # thisplot[true_label].set_color('blue')
 
 def predict(filepath):
     img = cv2.imread(filepath)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (224, 224))
     img = np.reshape(img, [1, 224, 224, 3])
-    classes = model.predict_proba(img, batch_size=None, verbose=True)
+
+    prediction = model.predict_proba(img, batch_size=None, verbose=True)
     # return CLASS_NAMES[np.argmax(classes)]
-    return classes[0]
+    i = np.argmax(prediction[0])
+    plot_value_array(i, prediction[0], CLASS_NAMES)
+
+    #Gemmer fil i base64 på et temporary sted
+    imgFile = tempfile.TemporaryFile()
+    plt.savefig(imgFile)
+    imgFile.seek(0)
+    savedplot = base64.b64encode(imgFile.read()).decode('UTF-8')
+    imgFile.close()
+    pct = round(100*np.max(prediction[0]),2)
+    values = [CLASS_NAMES[i], savedplot, pct]
+    return values
+

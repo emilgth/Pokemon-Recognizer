@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, request, redirect, url_for
+from flask import Flask, flash, request, redirect, url_for,render_template
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
 import predictions
@@ -31,16 +31,10 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return str(predictions.predict(os.path.join(app.config['UPLOAD_FOLDER'], filename)))
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    '''
+            predicts = predictions.predict(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return render_template("pokemon.html", pokemon_name=predicts[0] , image_data=predicts[1], pokemon_percentage=predicts[2])
+            #return 'Jeg tror det er en: {}'.format(str(predicts[0]))
+    return render_template("upload.html",)
 
 
 
