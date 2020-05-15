@@ -1,27 +1,18 @@
-import pathlib
-
-from keras import Sequential
 from keras.models import load_model
-from keras.preprocessing.image import ImageDataGenerator
-from keras.utils.np_utils import to_categorical
 import matplotlib.pyplot as plt
-import tensorflow as tf
 import base64
 import tempfile
-
-
-# physical_devices = tf.config.experimental.list_physical_devices('GPU')
-# tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
 import cv2
 import numpy as np
+import settings
 
 CLASS_NAMES = ['Bulbasaur', 'Charmander', 'Pikachu', 'Squirtle']
 
-model = load_model('./saved_model_80epoch')
+model = load_model(settings.settings['MODEL_PATH'])
 model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
+
 
 def plot_value_array(i, predictions_array, true_label):
     predictions_array, true_label = predictions_array, true_label[i]
@@ -36,14 +27,16 @@ def plot_value_array(i, predictions_array, true_label):
 
     # thisplot[true_label].set_color('blue')
 
+
 def img_base64():
-    #Gemmer fil i base64 på et temporary sted
+    # Gemmer fil i base64 på et temporary sted
     imgFile = tempfile.TemporaryFile()
     plt.savefig(imgFile)
     imgFile.seek(0)
     returnImg = base64.b64encode(imgFile.read()).decode('UTF-8')
     imgFile.close()
     return returnImg
+
 
 def predict(filepath):
     img = cv2.imread(filepath)
@@ -58,18 +51,9 @@ def predict(filepath):
     savedImg = img_base64()
 
     prediction = model.predict_proba(img, batch_size=None, verbose=True)
-    # return CLASS_NAMES[np.argmax(classes)]
     i = np.argmax(prediction[0])
     plot_value_array(i, prediction[0], CLASS_NAMES)
-
-    #Gemmer fil i base64 på et temporary sted
-    # imgFile = tempfile.TemporaryFile()
-    # plt.savefig(imgFile)
-    # imgFile.seek(0)
-    # savedplot = base64.b64encode(imgFile.read()).decode('UTF-8')
-    # imgFile.close()
     savedplot = img_base64()
-    pct = round(100*np.max(prediction[0]),2)
+    pct = round(100 * np.max(prediction[0]), 2)
     values = [CLASS_NAMES[i], savedplot, pct, savedImg]
     return values
-

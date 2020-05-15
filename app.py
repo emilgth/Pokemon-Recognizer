@@ -3,8 +3,10 @@ from flask import Flask, flash, request, redirect, url_for,render_template
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
 import predictions
+import get_poke_facts
+import settings
 
-UPLOAD_FOLDER = './input'
+UPLOAD_FOLDER = settings.settings['UPLOAD_PATH']
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
@@ -32,7 +34,9 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             predicts = predictions.predict(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return render_template("pokemon.html", pokemon_name=predicts[0] , image_data=predicts[1], pokemon_percentage=predicts[2], image_pokemon = predicts[3])
+            facts = get_poke_facts.get_facts(predicts[0])
+            print(facts)
+            return render_template("pokemon.html", facts=facts, pokemon_name=predicts[0] , image_data=predicts[1], pokemon_percentage=predicts[2], image_pokemon = predicts[3])
             #return 'Jeg tror det er en: {}'.format(str(predicts[0]))
     return render_template("upload.html",)
 
