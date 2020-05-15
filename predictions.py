@@ -16,21 +16,9 @@ import tempfile
 import cv2
 import numpy as np
 
-PATH = './pkmn'
-data_dir = pathlib.Path(PATH)
-# CLASS_NAMES = np.array([item.name for item in data_dir.glob('*')])
-CLASS_NAMES = ['bilasba', 'charmmand', 'pciak', 'squite']
-# print(CLASS_NAMES)
+CLASS_NAMES = ['Bulbasaur', 'Charmander', 'Pikachu', 'Squirtle']
 
-IDG = ImageDataGenerator(rescale=1. / 255, validation_split=0.2, )
-
-train_data = IDG.flow_from_directory(PATH, target_size=(224, 224), classes=list(CLASS_NAMES),
-                                     subset='training')
-
-validation_data = IDG.flow_from_directory(PATH, target_size=(224, 224), classes=list(CLASS_NAMES),
-                                          subset='validation')
-
-model = load_model('./saved_model_400epoch')
+model = load_model('./saved_model_80epoch')
 model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
