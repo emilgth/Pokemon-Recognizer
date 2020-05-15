@@ -41,7 +41,7 @@ def plot_value_array(i, predictions_array, true_label):
     plt.grid(False)
     x = range(4)
     plt.xticks(x, CLASS_NAMES)
-    plt.yticks([])
+    plt.yticks(range(2), ['0%', '100%'])
     thisplot = plt.bar(range(4), predictions_array, color="#777777")
     plt.ylim([0, 1])
     predicted_label = np.argmax(predictions_array)
@@ -65,6 +65,8 @@ def predict(filepath):
 
     plt.clf()
     plt.imshow(imgShow)
+    plt.yticks([])
+    plt.xticks([])
     savedImg = img_base64()
 
     prediction = model.predict_proba(img, batch_size=None, verbose=True)
