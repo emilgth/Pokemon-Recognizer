@@ -32,6 +32,7 @@ dataset = 'https://mega.nz/file/7YtkUaCB#3HaajMQPlxiYeCemgb5-WRJNpIM1ENt3TV4oFXU
 #### Brugsvejledning: 
 
 1. Opdater informationer i settings.py
+2. Opret en 'input' mappe der passer med din UPLOAD_PATH i settings
 2. Lav en database ved navn 'pokemon' og kør dump.sql filen
 3. Installer nødvendige pakker:
 
