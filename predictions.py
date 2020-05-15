@@ -27,7 +27,7 @@ model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
-img = cv2.imread('./bulb.jpg')
+img = cv2.imread('./squ_sorthvid.jpg')
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 img = cv2.resize(img, (224, 224))
 img = np.reshape(img, [1, 224, 224, 3])
