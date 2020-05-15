@@ -32,7 +32,7 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             predicts = predictions.predict(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return render_template("pokemon.html", pokemon_name=predicts[0] , image_data=predicts[1], pokemon_percentage=predicts[2])
+            return render_template("pokemon.html", pokemon_name=predicts[0] , image_data=predicts[1], pokemon_percentage=predicts[2], image_pokemon = predicts[3])
             #return 'Jeg tror det er en: {}'.format(str(predicts[0]))
     return render_template("upload.html",)
 
